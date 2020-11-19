@@ -1,12 +1,15 @@
-import React, { Component, useEffect } from "react";
+import React, { Component } from "react";
 import "../assets/styles/css/index.css";
 import { Route, Switch } from "react-router-dom";
 
 import Navbar from "../components/Navbar";
+import Navbar2 from "../components/Navbar2";
 import Home from "../pages/Home";
 import Rooms from "../pages/Rooms";
 import SingleRoom from "../pages/SingleRoom";
 import ErrorPage from "../pages/ErrorPage";
+import Profile from "../pages/Profile";
+import LoginCallback from "../components/LoginCallback";
 
 import { OktaAuth } from "@okta/okta-auth-js";
 import config from "../config";
@@ -60,15 +63,13 @@ class App extends Component {
   }
 
   login() {
-    console.log(authClient.token.getWithPopup);
-    authClient.token
-      .getWithPopup()
-      .then((res) => {
-        authClient.tokenManager.add("accessToken", res.tokens.accessToken);
-        authClient.tokenManager.add("idToken", res.tokens.idToken);
-        window.location.reload();
-      })
-      .catch((err) => console.log(err));
+    authClient.token.getWithRedirect();
+    // .then((res) => {
+    //   authClient.tokenManager.add("accessToken", res.tokens.accessToken);
+    //   authClient.tokenManager.add("idToken", res.tokens.idToken);
+    //   window.location.reload();
+    // })
+    // .catch((err) => console.log(err));
   }
 
   logout(state) {
@@ -79,10 +80,17 @@ class App extends Component {
   render() {
     return (
       <React.Fragment>
-        <Navbar logout={this.logout} login={this.login} state={this.state} />
+        <Navbar />
+        <Navbar2 logout={this.logout} login={this.login} state={this.state} />
         <Switch>
           <Route exact path="/" render={() => <Home state={this.state} />} />
+          <Route
+            exact
+            path="/profile"
+            render={() => <Profile state={this.state} />}
+          />
           <Route exact path="/rooms/" component={Rooms} />
+          <Route path="/implicit/callback" component={LoginCallback} />
           <Route exact path="/rooms/:slug" component={SingleRoom} />
           <Route component={ErrorPage} />
         </Switch>

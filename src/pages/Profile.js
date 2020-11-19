@@ -12,8 +12,13 @@ const Home = (props) => {
           <Banner title="Login for Info!" subtitle="Click Login Above" />
         ) : (
           <Banner title="User Info!">
-            <p>Access Token: {props.state.accessToken}</p>
-            <p>ID Token: {props.state.idToken}</p>
+            {Object.keys(props.state.claims).map((key) => {
+              return (
+                <p>
+                  {key}: {props.state.claims[key]}
+                </p>
+              );
+            })}
           </Banner>
         )}
       </Cover>
